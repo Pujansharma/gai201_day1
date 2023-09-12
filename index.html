@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pujan Raja</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Shyare Generator</h1>
+        <form id="queryForm">
+            <label for="topic">Enter a Shyare Topic:</label>
+            <input type="text" id="topic" name="topic" required placeholder=" love, dog, life"><br>
+            <button type="submit">Generate Text</button>
+        </form>
+        <div class="response" id="responseContainer">
+            <!-- Response will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("queryForm");
+        const responseContainer = document.getElementById("responseContainer");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const topic = document.getElementById("topic").value;
+
+            try {
+                const response = await fetch("http://localhost:3000/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ topic })
+                });
+
+                const data = await response.json();
+
+                if (response.status === 200) {
+                    responseContainer.innerHTML = `<p class="success-text">Generated Text:</p><p>${data.code}</p>`;
+                } else {
+                    responseContainer.innerHTML = `<p class="error-text">Error:</p><p>${data.msg}</p>`;
+                }
+            } catch (error) {
+                responseContainer.innerHTML = `<p class="error-text">An error occurred:</p><p>${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
